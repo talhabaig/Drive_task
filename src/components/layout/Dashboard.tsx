@@ -65,29 +65,29 @@ export default function Dashboard() {
 
         <div className="flex flex-col justify-between h-full ">
           <div className="h-[calc(100vh-241px)]  overflow-auto">
-          {sideBarItems && sideBarItems?.map((item) => (
-  item.label && (
-    <div
-      className={`flex min-h-[59px] gap-4 py-4 px-8 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis items-center hover:bg-[#E9F7FF] rounded-full`}
-      key={item.id}
-      onClick={() => {
-        navigate(item.link);
-      }}
-    >
-      <div className="flex justify-between items-center w-full">
-        <div className={`flex gap-x-4 items-center `}>
-          <IcreateFolder />
-          <div className="text-[18px] font-bold text-navy-blue w-[8rem] truncate">
-            {item.label}
-          </div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-  )
-))}
-
-
+            {sideBarItems &&
+              sideBarItems?.map(
+                (item) =>
+                  item.label && (
+                    <div
+                      className={`flex min-h-[59px] gap-4 py-4 px-8 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis items-center hover:bg-[#E9F7FF] rounded-full`}
+                      key={item.id}
+                      onClick={() => {
+                        navigate(item.link);
+                      }}
+                    >
+                      <div className="flex justify-between items-center w-full">
+                        <div className={`flex gap-x-4 items-center `}>
+                          <IcreateFolder />
+                          <div className="text-[18px] font-bold text-navy-blue w-[8rem] truncate">
+                            {item.label}
+                          </div>
+                        </div>
+                        <div></div>
+                      </div>
+                    </div>
+                  )
+              )}
           </div>
           <div></div>
         </div>
@@ -101,7 +101,11 @@ export default function Dashboard() {
             Create Folder <IcreateFolder />
           </div>
 
-          <Modal isOpen={isModalOpen} onClose={closeModal} heading="Create Folder">
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            heading="Create Folder"
+          >
             <div className="flex flex-col items-center w-full">
               <input
                 type="text"

@@ -49,7 +49,7 @@ export const folderSlice = createSlice({
       state.folders.push(action.payload);
     },
     addFile: (state, action: PayloadAction<File>) => {
-      console.log(action);
+      // console.log(action);
       state.files.push(action.payload);
     },
     removeFolder: (state, action: PayloadAction<string>) => {
