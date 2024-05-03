@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@app/store";
-import { deleteFolderById, fetchFolderById} from "./folderAPI"; 
+import { deleteFolderById, fetchFolderById } from "./folderAPI";
 export interface Folder {
   id: string;
   name: any;
@@ -8,22 +8,19 @@ export interface Folder {
 export interface File {
   id: any;
   file_name: any;
-
 }
 
 export interface FolderState {
   folders: Folder[];
-  files : File[];
+  files: File[];
   status: "idle" | "loading" | "failed";
 }
 
 const initialState: FolderState = {
   folders: [],
-  files:[],
+  files: [],
   status: "idle",
 };
-
-
 
 export const fetchFolderByIdAsync = createAsyncThunk(
   "folder/fetchFolderById",
@@ -52,7 +49,20 @@ export const folderSlice = createSlice({
       state.files.push(action.payload);
     },
     removeFolder: (state, action: PayloadAction<string>) => {
-      state.folders = state.folders.filter((folder) => folder.id !== action.payload);
+      state.folders = state.folders.filter(
+        (folder) => folder.id !== action.payload
+      );
+    },
+    removeFile: (state, action: PayloadAction<number>) => {
+      state.files = state.files.filter(
+        (file, index) => index !== action.payload
+      );
+    },
+    editFile: (state, action: PayloadAction<any>) => {
+      const { currentFileIndex, fileName } = action.payload;
+      state.files = state.files.map((file, index) =>
+        index === currentFileIndex ? { ...file, file_name: fileName } : file
+      );
     },
   },
   extraReducers: (builder) => {
@@ -72,7 +82,9 @@ export const folderSlice = createSlice({
       })
       .addCase(deleteFolderByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.folders = state.folders.filter((folder) => folder.id !== action.payload);
+        state.folders = state.folders.filter(
+          (folder) => folder.id !== action.payload
+        );
       })
       .addCase(deleteFolderByIdAsync.rejected, (state) => {
         state.status = "failed";
@@ -80,7 +92,8 @@ export const folderSlice = createSlice({
   },
 });
 
-export const { addFolder,addFile , removeFolder } = folderSlice.actions;
+export const { addFolder, addFile, removeFolder, removeFile, editFile } =
+  folderSlice.actions;
 
 export const selectFolders = (state: RootState) => state.folder.folders;
 export const selectFiles = (state: RootState) => state.folder.files;
