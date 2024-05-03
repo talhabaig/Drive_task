@@ -59,7 +59,7 @@ export default function Header() {
                 type="text"
                 value={fileName}
                 onChange={handleChange}
-                placeholder="Enter folder name"
+                placeholder="Enter file name"
                 className="pl-2 border border-gray-400 rounded px-2 py-1 mb-2 w-full"
               />
               <div className="flex gap-4">
