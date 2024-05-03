@@ -80,6 +80,17 @@ export const folderSlice = createSlice({
         (folder) => folder.id !== id
       );
     },
+    removeFile: (state, action: PayloadAction<number>) => {
+      state.files = state.files.filter(
+        (file, index) => index !== action.payload
+      );
+    },
+    editFile: (state, action: PayloadAction<any>) => {
+      const { currentFileIndex, fileName } = action.payload;
+      state.files = state.files.map((file, index) =>
+        index === currentFileIndex ? { ...file, file_name: fileName } : file
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -108,7 +119,7 @@ export const folderSlice = createSlice({
   },
 });
 
-export const { addFolder, addFile, removeFolder, renameFolder } =
+export const { addFolder, addFile, removeFolder, renameFolder,removeFile, editFile } =
   folderSlice.actions;
 
 export const selectFolders = (state: RootState) => state.folder.folders;
