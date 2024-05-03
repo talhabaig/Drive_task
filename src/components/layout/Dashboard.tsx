@@ -2,15 +2,25 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IDrive, IHorizontalDots, IcreateFolder } from "../ui-icons";
 import Modal from "../Modal/DModal";
-import { useAppDispatch } from "@/app/hooks";
-import { addFolder } from "@/app/features/counter/folderSlice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import {
+  addFolder,
+  removeFolder,
+  renameFolder,
+  selectFolders,
+} from "@/app/features/counter/folderSlice";
 export default function Dashboard() {
   const dispatch = useAppDispatch();
-
+  const folders = useAppSelector(selectFolders);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isHorizontalClick, setIsHorizontalClick] = useState<number | null>(null);
+
+  const [isDelete, setIsDelete] = useState(false);
+  const [isHorizontalClick, setIsHorizontalClick] = useState<number | null>(
+    null
+  );
   const [folderName, setFolderName] = useState("");
+  const [editFolder, setEditFolder] = useState<any>();
   const [sideBarItems, setSideBarItems] = useState([
     {
       id: 1,
@@ -26,16 +36,19 @@ export default function Dashboard() {
 
   const openModal = () => {
     setIsModalOpen(true);
+    setIsDelete(false);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setIsEdit(false);
     setFolderName("");
+    setIsDelete(true);
   };
 
-  const handleEdit = (folderName: string) => {
+  const handleEdit = (folderName: string, folder: any) => {
     setFolderName(folderName);
+    setEditFolder(folder);
     setIsEdit(true);
   };
 
@@ -48,6 +61,7 @@ export default function Dashboard() {
 
     setSideBarItems([...sideBarItems, newItem]);
     closeModal();
+    setIsDelete(false);
   };
 
   const handleChange = (e: any) => {
@@ -56,6 +70,7 @@ export default function Dashboard() {
 
   const handleCancel = () => {
     closeModal();
+    setIsDelete(false);
   };
 
   return (
@@ -72,15 +87,17 @@ export default function Dashboard() {
         {/* Sidebar */}
         <div className="flex flex-col justify-between h-full">
           <div className="h-[calc(100vh-241px)] overflow-auto">
-            {sideBarItems &&
-              sideBarItems.map(
+            {folders &&
+              folders.map(
                 (item, index) =>
-                  item.label && (
+                  item.name && (
                     <NavLink
                       className={({ isActive }) =>
-                        `${isActive && "!bg-[#E9F7FF]"} hover:bg-[#E9F7FF] flex min-h-[59px] gap-4 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis items-center rounded-full`
+                        `${
+                          isActive && "!bg-[#E9F7FF]"
+                        } hover:bg-[#E9F7FF] flex min-h-[59px] gap-4 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis items-center rounded-full`
                       }
-                      to={item.link}
+                      to={`/folder/${item.id}`}
                     >
                       <div
                         className={`flex min-h-[59px] gap-4 py-4 px-8 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis items-center rounded-full`}
@@ -90,10 +107,9 @@ export default function Dashboard() {
                           <div className={`flex gap-x-4 items-center `}>
                             <IcreateFolder />
                             <div className=" text-[18px] font-bold text-navy-blue w-[8rem] truncate">
-                              {item.label}
+                              {item.name}
                             </div>
                           </div>
-                       
                         </div>
                         <div
                           className=""
@@ -110,15 +126,22 @@ export default function Dashboard() {
                             <>
                               <div className=" absolute bottom-1 right-0 flex px-2 gap-2 flex-row  bg-gray-200 rounded-full">
                                 <div
-                                className="hover:text-blue-400"
+                                  className="hover:text-blue-400"
                                   onClick={() => {
                                     setIsEdit(true);
-                                    handleEdit(item.label);
+                                    handleEdit(item.name, item);
                                   }}
                                 >
                                   Edit
                                 </div>
-                                <div className="hover:text-blue-400">Delete</div>{" "}
+                                <div
+                                  onClick={() => {
+                                    setIsDelete(true);
+                                  }}
+                                  className="hover:text-blue-400"
+                                >
+                                  Delete
+                                </div>{" "}
                               </div>
                             </>
                           )}
@@ -138,7 +161,6 @@ export default function Dashboard() {
           className="flex gap-2 font-semibold py-3 px-3 bg-gray-800 text-white rounded-full cursor-pointer fill-white stroke-white"
         >
           Create Folder <IcreateFolder />
-          <div></div>
         </div>
       </div>
 
@@ -192,9 +214,8 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => {
-                const newId = generateRandomId(6);
-                dispatch(addFolder({ id: newId, name: folderName }));
-                handleSave(newId);
+                dispatch(renameFolder({ id: editFolder.id, name: folderName }));
+                setIsEdit(false);
               }}
               className="bg-white text-[#0f172a] font-semibold px-4 py-2 rounded hover:text-white hover:bg-[#0f172a]"
             >
@@ -203,6 +224,34 @@ export default function Dashboard() {
           </div>
         </div>
       </Modal>
+<>{folders &&
+              folders.map(
+                (item) =>
+      <Modal
+        isOpen={isDelete}
+        onClose={closeModal}
+        heading={`Are you sure you want to delete ${item.name}`}
+      >
+        <div className="flex flex-col items-center w-full">
+          <div className="flex gap-4">
+            <button
+              onClick={handleCancel}
+              className="text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                dispatch(removeFolder({ id: item.id }));
+                setIsDelete(false);
+              }}
+              className="bg-white text-[#0f172a] font-semibold px-4 py-2 rounded hover:text-white hover:bg-[#0f172a]"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </Modal>)} </>
     </div>
   );
 }

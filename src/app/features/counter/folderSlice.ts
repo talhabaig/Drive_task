@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@app/store";
-import { deleteFolderById, fetchFolderById} from "./folderAPI"; 
+import { deleteFolderById, fetchFolderById } from "./folderAPI";
 export interface Folder {
   id: string;
   name: any;
@@ -8,22 +8,19 @@ export interface Folder {
 export interface File {
   id: any;
   file_name: any;
-
 }
 
 export interface FolderState {
   folders: Folder[];
-  files : File[];
+  files: File[];
   status: "idle" | "loading" | "failed";
 }
 
 const initialState: FolderState = {
   folders: [],
-  files:[],
+  files: [],
   status: "idle",
 };
-
-
 
 export const fetchFolderByIdAsync = createAsyncThunk(
   "folder/fetchFolderById",
@@ -48,11 +45,40 @@ export const folderSlice = createSlice({
     addFolder: (state, action: PayloadAction<Folder>) => {
       state.folders.push(action.payload);
     },
+    renameFolder: (state, action: PayloadAction<Folder>) => {
+      const { id, name } = action.payload;
+      // Find the index of the folder with the given ID
+      const folderIndex = state.folders.findIndex((folder) => folder.id === id);
+
+      if (folderIndex !== -1) {
+        // Create a copy of the folder to update its name
+        const updatedFolder = {
+          ...state.folders[folderIndex],
+          name: name,
+        };
+
+        // Create a copy of the folders array with the updated folder
+        const updatedFolders = [...state.folders];
+        updatedFolders[folderIndex] = updatedFolder;
+
+        // Return the updated state with the new array of folders
+        return {
+          ...state,
+          folders: updatedFolders,
+        };
+      }
+
+      // If the folder with the given ID is not found, return the current state unchanged
+      return state;
+    },
     addFile: (state, action: PayloadAction<File>) => {
       state.files.push(action.payload);
     },
-    removeFolder: (state, action: PayloadAction<string>) => {
-      state.folders = state.folders.filter((folder) => folder.id !== action.payload);
+    removeFolder: (state, action: PayloadAction<any>) => {
+      const { id } = action.payload;
+      state.folders = state.folders.filter(
+        (folder) => folder.id !== id
+      );
     },
   },
   extraReducers: (builder) => {
@@ -72,7 +98,9 @@ export const folderSlice = createSlice({
       })
       .addCase(deleteFolderByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.folders = state.folders.filter((folder) => folder.id !== action.payload);
+        state.folders = state.folders.filter(
+          (folder) => folder.id !== action.payload
+        );
       })
       .addCase(deleteFolderByIdAsync.rejected, (state) => {
         state.status = "failed";
@@ -80,7 +108,8 @@ export const folderSlice = createSlice({
   },
 });
 
-export const { addFolder,addFile , removeFolder } = folderSlice.actions;
+export const { addFolder, addFile, removeFolder, renameFolder } =
+  folderSlice.actions;
 
 export const selectFolders = (state: RootState) => state.folder.folders;
 export const selectFiles = (state: RootState) => state.folder.files;
