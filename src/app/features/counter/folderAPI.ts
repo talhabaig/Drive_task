@@ -12,7 +12,6 @@ export function fetchFolderById(folderId: string) {
   export function deleteFolderById(folderId: string) {
     return new Promise<void>((resolve) =>
       setTimeout(() => {
-        console.log(`Folder ${folderId} deleted`);
         resolve();
       }, 500)
     );
