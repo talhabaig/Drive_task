@@ -98,10 +98,24 @@ export function IHorizontalDots({ ...props }: Icon) {
   );
 }
 
-function IDelete({ ...props }: Icon) {
+export function IDelete({ ...props }: Icon) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" {...props} viewBox="0 0 448 512">
       <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64s14.3 32 32 32h384c17.7 0 32-14.3 32-32s-14.3-32-32-32h-96l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32l21.2 339c1.6 25.3 22.6 45 47.9 45h245.8c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+    </svg>
+  );
+}
+export function FileIcon({...props}: Icon) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 50 50"
+      width="50px"
+      height="50px"
+      {...props}
+    >
+      <path d="M 7 2 L 7 48 L 43 48 L 43 14.59375 L 42.71875 14.28125 L 30.71875 2.28125 L 30.40625 2 Z M 9 4 L 29 4 L 29 16 L 41 16 L 41 46 L 9 46 Z M 31 5.4375 L 39.5625 14 L 31 14 Z" />
+
     </svg>
   );
 }

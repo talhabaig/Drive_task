@@ -10,7 +10,8 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { useParams } from "react-router-dom";
 
 export default function Header() {
-  const foldername = useAppSelector(selectFolders);
+  const folders = useAppSelector(selectFolders);
+  console.log("lo", folders);
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,20 +32,23 @@ export default function Header() {
   const handleCancel = () => {
     closeModal();
   };
+  // console.log(folders);
 
   const handleChange = (e: any) => {
     setFileName(e.target.value);
   };
   return (
     <>
-      
-        <div className="flex items-center gap-4 py-[20px] px-4 border-b justify-start text-[18px] w-full ">
-          <div
-            onClick={openModal}
-            className="flex gap-2 font-semibold py-3 px-3 bg-gray-800 text-white rounded-full cursor-pointer hover:bg-[#E9F7FF] hover:text-gray-800 fill-white stroke-white"
-          >
-            Create File <Ifile />
-          </div>
+      {
+        <div className="flex items-center gap-4 min-h-[92px] py-[20px] px-4 border-b justify-start text-[18px] w-full ">
+          {folders.length > 0 && id && (
+            <div
+              onClick={openModal}
+              className="flex gap-2 font-semibold py-3 px-3 bg-gray-800 text-white rounded-full cursor-pointer hover:bg-[#E9F7FF] hover:text-gray-800 fill-white stroke-white"
+            >
+              Create File <Ifile />
+            </div>
+          )}
           <Modal
             isOpen={isModalOpen}
             onClose={closeModal}
@@ -78,7 +82,7 @@ export default function Header() {
             </div>
           </Modal>
         </div>
-    
+      }
     </>
   );
 }

@@ -14,7 +14,7 @@ export const routes = Router([
     children: [
       {
         path: "folder/:id",
-        element: <FolderDetails/>,
+        element: <FolderDetails />,
       },
     ],
   },
