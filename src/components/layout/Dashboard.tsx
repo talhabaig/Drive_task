@@ -16,9 +16,7 @@ export default function Dashboard() {
   const [isEdit, setIsEdit] = useState(false);
 
   const [isDelete, setIsDelete] = useState(false);
-  const [isHorizontalClick, setIsHorizontalClick] = useState<number | null>(
-    null
-  );
+  const [isHorizontalClick, setIsHorizontalClick] = useState<any>(null);
   const [folderName, setFolderName] = useState("");
   const [editFolder, setEditFolder] = useState<any>();
   const [sideBarItems, setSideBarItems] = useState([
@@ -43,7 +41,7 @@ export default function Dashboard() {
     setIsModalOpen(false);
     setIsEdit(false);
     setFolderName("");
-    setIsDelete(true);
+    setIsDelete(false);
   };
 
   const handleEdit = (folderName: string, folder: any) => {
@@ -112,23 +110,23 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div
-                          className=""
+                          className={`transform rotate-90`}
                           onClick={() => {
                             setIsHorizontalClick(index);
                           }}
                         >
-                          {" "}
-                          <IHorizontalDots />{" "}
+                          <IHorizontalDots />
                         </div>
                         <div className="relative ">
                           {" "}
                           {isHorizontalClick === index && (
                             <>
-                              <div className=" absolute bottom-1 right-0 flex px-2 gap-2 flex-row  bg-gray-200 rounded-full">
+                              <div className=" absolute bottom-1 right-9 flex px-2 gap-2 flex-row  bg-gray-200 rounded-full">
                                 <div
                                   className="hover:text-blue-400"
                                   onClick={() => {
                                     setIsEdit(true);
+                                    setIsHorizontalClick(false);
                                     handleEdit(item.name, item);
                                   }}
                                 >
@@ -137,6 +135,7 @@ export default function Dashboard() {
                                 <div
                                   onClick={() => {
                                     setIsDelete(true);
+                                    setIsHorizontalClick(false);
                                   }}
                                   className="hover:text-blue-400"
                                 >
@@ -224,34 +223,36 @@ export default function Dashboard() {
           </div>
         </div>
       </Modal>
-<>{folders &&
-              folders.map(
-                (item) =>
-      <Modal
-        isOpen={isDelete}
-        onClose={closeModal}
-        heading={`Are you sure you want to delete ${item.name}`}
-      >
-        <div className="flex flex-col items-center w-full">
-          <div className="flex gap-4">
-            <button
-              onClick={handleCancel}
-              className="text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white"
+      <>
+        {folders &&
+          folders.map((item) => (
+            <Modal
+              isOpen={isDelete}
+              onClose={closeModal}
+              heading={`Are you sure you want to delete ${item.name}`}
             >
-              Cancel
-            </button>
-            <button
-              onClick={() => {
-                dispatch(removeFolder({ id: item.id }));
-                setIsDelete(false);
-              }}
-              className="bg-white text-[#0f172a] font-semibold px-4 py-2 rounded hover:text-white hover:bg-[#0f172a]"
-            >
-              Save
-            </button>
-          </div>
-        </div>
-      </Modal>)} </>
+              <div className="flex flex-col items-center w-full">
+                <div className="flex gap-4">
+                  <button
+                    onClick={handleCancel}
+                    className="text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      dispatch(removeFolder({ id: item.id }));
+                      setIsDelete(false);
+                    }}
+                    className="bg-white text-[#0f172a] font-semibold px-4 py-2 rounded hover:text-white hover:bg-[#0f172a]"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          ))}{" "}
+      </>
     </div>
   );
 }
